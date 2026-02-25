@@ -47,7 +47,7 @@
             margin-left: 8px;
         }
         
-        .toggle-btn {
+        .toggle-btn, .play-btn {
             background: rgba(255,255,255,0.2);
             border: 1px solid rgba(255,255,255,0.4);
             color: white;
@@ -58,13 +58,18 @@
             transition: all 0.2s ease;
         }
         
-        .toggle-btn:hover {
+        .toggle-btn:hover, .play-btn:hover {
             background: rgba(255,255,255,0.3);
         }
         
-        .toggle-btn.active {
+        .toggle-btn.active, .play-btn.active {
             background: rgba(255,255,255,0.9);
             color: #667eea;
+        }
+        
+        .play-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
         }
         
         .section {
@@ -223,6 +228,8 @@
                 <span class="subtitle">点击音标或单词即可听到发音</span>
             </div>
             <button class="toggle-btn" id="descToggle" onclick="toggleDescriptions()">显示分类</button>
+            <button class="play-btn" id="playAllBtn" onclick="playAll()">▶ 全部播放</button>
+            <button class="play-btn" id="loopBtn" onclick="toggleLoop()">🔁 循环播放</button>
         </div>
         
         <!-- 元音部分 -->
@@ -426,6 +433,133 @@
                 btn.classList.add('active');
                 btn.textContent = '隐藏分类';
                 descs.forEach(desc => desc.classList.add('show'));
+            }
+        }
+        
+        // 全局播放控制
+        let isPlayingAll = false;
+        let isLooping = false;
+        let currentPlayIndex = 0;
+        let playQueue = [];
+        
+        // 收集所有音标数据到播放队列
+        function collectAllPhonetics() {
+            const allPhonetics = [];
+            for (const category in phoneticsData) {
+                phoneticsData[category].forEach(item => {
+                    allPhonetics.push(item);
+                });
+            }
+            return allPhonetics;
+        }
+        
+        // 播放全部
+        async function playAll() {
+            if (isPlayingAll) {
+                stopPlayAll();
+                return;
+            }
+            
+            isPlayingAll = true;
+            const btn = document.getElementById('playAllBtn');
+            btn.textContent = '⏹ 停止播放';
+            btn.classList.add('active');
+            
+            playQueue = collectAllPhonetics();
+            currentPlayIndex = 0;
+            
+            await playNextInQueue();
+        }
+        
+        // 停止播放
+        function stopPlayAll() {
+            isPlayingAll = false;
+            const btn = document.getElementById('playAllBtn');
+            btn.textContent = '▶ 全部播放';
+            btn.classList.remove('active');
+            
+            // 停止当前播放的音频
+            const cards = document.querySelectorAll('.phonetic-card');
+            cards.forEach(card => card.classList.remove('playing'));
+        }
+        
+        // 播放队列中的下一个
+        async function playNextInQueue() {
+            if (!isPlayingAll || currentPlayIndex >= playQueue.length) {
+                if (isLooping && isPlayingAll) {
+                    currentPlayIndex = 0;
+                } else {
+                    stopPlayAll();
+                    return;
+                }
+            }
+            
+            const item = playQueue[currentPlayIndex];
+            const cards = document.querySelectorAll('.phonetic-card');
+            let targetCard = null;
+            
+            // 找到对应的卡片
+            cards.forEach(card => {
+                if (card.dataset.symbol === item.symbol) {
+                    targetCard = card;
+                }
+            });
+            
+            if (targetCard) {
+                // 高亮当前播放的卡片
+                cards.forEach(c => c.classList.remove('playing'));
+                targetCard.classList.add('playing');
+                
+                // 滚动到可见区域
+                targetCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                
+                // 1. 播放音标音频
+                if (item.audio) {
+                    await playAudioWithPromise(item.audio);
+                    await new Promise(resolve => setTimeout(resolve, 300));
+                }
+                
+                // 2. 播放示例单词（使用语音合成）
+                if (item.words && item.words.length > 0) {
+                    for (const word of item.words) {
+                        if (!isPlayingAll) break;
+                        speak(word, 'en-US');
+                        await new Promise(resolve => setTimeout(resolve, 800));
+                    }
+                }
+                
+                // 延迟后播放下一个音标
+                await new Promise(resolve => setTimeout(resolve, 500));
+            }
+            
+            currentPlayIndex++;
+            
+            if (isPlayingAll) {
+                await playNextInQueue();
+            }
+        }
+        
+        // 播放音频并返回 Promise
+        function playAudioWithPromise(audioPath) {
+            return new Promise((resolve) => {
+                const audio = new Audio(audioPath);
+                audio.onended = resolve;
+                audio.onerror = resolve; // 错误时也继续
+                audio.play().catch(() => resolve());
+            });
+        }
+        
+        // 切换循环播放
+        function toggleLoop() {
+            const btn = document.getElementById('loopBtn');
+            isLooping = !isLooping;
+            
+            if (isLooping) {
+                btn.classList.add('active');
+                btn.textContent = '🔁 循环中';
+            } else {
+                btn.classList.remove('active');
+                btn.textContent = '🔁 循环播放';
             }
         }
         
