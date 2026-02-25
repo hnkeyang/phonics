@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>48个英语国际音标 - 点击发音</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 10px;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+        
+        .header h1 {
+            display: inline;
+            font-size: 1.2rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .header .subtitle {
+            display: inline;
+            font-size: 0.75rem;
+            color: rgba(255,255,255,0.9);
+            margin-left: 8px;
+        }
+        
+        .toggle-btn {
+            background: rgba(255,255,255,0.2);
+            border: 1px solid rgba(255,255,255,0.4);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 15px;
+            font-size: 0.7rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .toggle-btn:hover {
+            background: rgba(255,255,255,0.3);
+        }
+        
+        .toggle-btn.active {
+            background: rgba(255,255,255,0.9);
+            color: #667eea;
+        }
+        
+        .section {
+            background: white;
+            border-radius: 12px;
+            padding: 12px;
+            margin-bottom: 12px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+        }
+        
+        .section-title {
+            font-size: 1rem;
+            color: #333;
+            margin-bottom: 10px;
+            padding-bottom: 5px;
+            border-bottom: 2px solid #667eea;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .section-title .icon {
+            font-size: 1.2rem;
+        }
+        
+        .phonetics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+            gap: 8px;
+        }
+        
+        .phonetic-card {
+            background: linear-gradient(145deg, #f5f7fa 0%, #e4e8ec 100%);
+            border-radius: 6px;
+            padding: 6px 10px;
+            transition: all 0.2s ease;
+            cursor: pointer;
+            border: 1px solid transparent;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+        }
+        
+        .phonetic-card:hover {
+            box-shadow: 0 3px 8px rgba(102, 126, 234, 0.3);
+            border-color: #667eea;
+        }
+        
+        .phonetic-card.playing {
+            background: linear-gradient(145deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        
+        .phonetic-card.playing .phonetic-symbol,
+        .phonetic-card.playing .word {
+            color: white;
+        }
+        
+        .phonetic-left {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            white-space: nowrap;
+        }
+        
+        .phonetic-symbol {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #667eea;
+            font-family: 'Times New Roman', serif;
+        }
+        
+        .phonetic-desc {
+            font-size: 0.65rem;
+            color: #888;
+            display: none;
+        }
+        
+        .phonetic-desc.show {
+            display: block;
+        }
+        
+        .phonetic-card.playing .phonetic-desc {
+            color: rgba(255,255,255,0.8);
+        }
+        
+        .words-container {
+            display: flex;
+            flex-direction: column;
+            gap: 3px;
+            align-items: flex-end;
+        }
+        
+        .word {
+            background: white;
+            padding: 2px 8px;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            color: #333;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+            transition: all 0.2s ease;
+            cursor: pointer;
+            white-space: nowrap;
+        }
+        
+        .word:hover {
+            background: #667eea;
+            color: white;
+        }
+        
+        .phonetic-card.playing .word {
+            background: rgba(255,255,255,0.25);
+        }
+        
+        .tips {
+            background: rgba(255,255,255,0.95);
+            border-radius: 10px;
+            padding: 12px;
+            margin-top: 10px;
+            font-size: 0.8rem;
+        }
+        
+        .tips h3 {
+            color: #667eea;
+            margin-bottom: 5px;
+            font-size: 0.9rem;
+        }
+        
+        .tips ul {
+            padding-left: 15px;
+            color: #555;
+            line-height: 1.5;
+        }
+        
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 1.4rem;
+            }
+            
+            .phonetics-grid {
+                grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+            }
+            
+            .phonetic-symbol {
+                font-size: 1.3rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div>
+                <h1>48个英语国际音标</h1>
+                <span class="subtitle">点击音标或单词即可听到发音</span>
+            </div>
+            <button class="toggle-btn" id="descToggle" onclick="toggleDescriptions()">显示分类</button>
+        </div>
+        
+        <!-- 元音部分 -->
+        <div class="section">
+            <h2 class="section-title"><span class="icon">🔊</span> 单元音 (12个)</h2>
+            <div class="phonetics-grid" id="monophthongs"></div>
+        </div>
+        
+        <div class="section">
+            <h2 class="section-title"><span class="icon">🔊</span> 双元音 (8个)</h2>
+            <div class="phonetics-grid" id="diphthongs"></div>
+        </div>
+        
+        <!-- 辅音部分 -->
+        <div class="section">
+            <h2 class="section-title"><span class="icon">🔊</span> 清辅音 (11个)</h2>
+            <div class="phonetics-grid" id="voiceless"></div>
+        </div>
+        
+        <div class="section">
+            <h2 class="section-title"><span class="icon">🔊</span> 浊辅音 (17个)</h2>
+            <div class="phonetics-grid" id="voiced"></div>
+        </div>
+        
+        <div class="tips">
+            <h3>💡 使用提示</h3>
+            <ul>
+                <li>点击音标符号可听到该音标的发音</li>
+                <li>点击单词可听到该单词的发音</li>
+                <li>建议使用 Chrome、Edge 等现代浏览器以获得最佳体验</li>
+                <li>48个音标包含：12个单元音、8个双元音、28个辅音（11个清辅音+17个浊辅音）</li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        // 音标数据 - 包含音频文件路径
+        const phoneticsData = {
+            // 单元音 - 长元音 (5个)
+            monophthongs: [
+                { symbol: '/iː/', desc: '长元音', words: ['see', 'tree'], audio: './assets/vowel/long_vowel_i.aac' },
+                { symbol: '/ɜː/', desc: '长元音', words: ['bird', 'nurse'], audio: './assets/vowel/long_vowel_3.aac' },
+                { symbol: '/ɑː/', desc: '长元音', words: ['car', 'star'], audio: './assets/vowel/long_vowel_2.aac' },
+                { symbol: '/ɔː/', desc: '长元音', words: ['door', 'more'], audio: './assets/vowel/long_vowel_4.aac' },
+                { symbol: '/uː/', desc: '长元音', words: ['food', 'school'], audio: './assets/vowel/long_vowel_u.aac' },
+                // 单元音 - 短元音 (7个)
+                { symbol: '/ɪ/', desc: '短元音', words: ['sit', 'big'], audio: './assets/vowel/short_vowel_I.aac' },
+                { symbol: '/e/', desc: '短元音', words: ['bed', 'red'], audio: './assets/vowel/short_vowel_e.aac' },
+                { symbol: '/æ/', desc: '短元音', words: ['cat', 'hat'], audio: './assets/vowel/short_vowel_5.aac' },
+                { symbol: '/ə/', desc: '短元音', words: ['about', 'sofa'], audio: './assets/vowel/short_vowel_6.aac' },
+                { symbol: '/ʌ/', desc: '短元音', words: ['cup', 'sun'], audio: './assets/vowel/short_vowel_7.aac' },
+                { symbol: '/ɒ/', desc: '短元音', words: ['dog', 'hot'], audio: './assets/vowel/short_vowel_8.aac' },
+                { symbol: '/ʊ/', desc: '短元音', words: ['book', 'look'], audio: './assets/vowel/short_vowel_9.aac' }
+            ],
+            // 双元音 (8个)
+            diphthongs: [
+                { symbol: '/eɪ/', desc: '合口双元音', words: ['cake', 'day'], audio: './assets/vowel/two_vowel_ei.aac' },
+                { symbol: '/aɪ/', desc: '合口双元音', words: ['like', 'my'], audio: './assets/vowel/two_vowel_1.aac' },
+                { symbol: '/ɔɪ/', desc: '合口双元音', words: ['boy', 'toy'], audio: './assets/vowel/two_vowel_4.aac' },
+                { symbol: '/aʊ/', desc: '合口双元音', words: ['cow', 'house'], audio: './assets/vowel/two_vowel_2.aac' },
+                { symbol: '/əʊ/', desc: '合口双元音', words: ['go', 'home'], audio: './assets/vowel/two_vowel_5.aac' },
+                { symbol: '/ɪə/', desc: '集中双元音', words: ['ear', 'here'], audio: './assets/vowel/two_vowel_6.aac' },
+                { symbol: '/eə/', desc: '集中双元音', words: ['hair', 'care'], audio: './assets/vowel/two_vowel_3.aac' },
+                { symbol: '/ʊə/', desc: '集中双元音', words: ['tour', 'pure'], audio: './assets/vowel/two_vowel_7.aac' }
+            ],
+            // 清辅音 (11个)
+            voiceless: [
+                { symbol: '/p/', desc: '爆破音', words: ['pen', 'map'], audio: './assets/consonant/consonant_p.aac' },
+                { symbol: '/t/', desc: '爆破音', words: ['tea', 'cat'], audio: './assets/consonant/consonant_t.aac' },
+                { symbol: '/k/', desc: '爆破音', words: ['key', 'book'], audio: './assets/consonant/consonant_k.aac' },
+                { symbol: '/f/', desc: '摩擦音', words: ['fish', 'life'], audio: './assets/consonant/consonant_f.aac' },
+                { symbol: '/s/', desc: '摩擦音', words: ['sun', 'bus'], audio: './assets/consonant/consonant_s.aac' },
+                { symbol: '/ʃ/', desc: '摩擦音', words: ['she', 'fish'], audio: './assets/consonant/consonant_1.aac' },
+                { symbol: '/θ/', desc: '摩擦音', words: ['think', 'bath'], audio: './assets/consonant/consonant_2.aac' },
+                { symbol: '/h/', desc: '声门音', words: ['he', 'home'], audio: './assets/consonant/consonant_h.aac' },
+                { symbol: '/tʃ/', desc: '破擦音', words: ['china', 'watch'], audio: './assets/consonant/consonant_6.aac' },
+                { symbol: '/ts/', desc: '破擦音', words: ['cats', 'hats'], audio: './assets/consonant/consonant_ts.aac' },
+                { symbol: '/tr/', desc: '破擦音', words: ['tree', 'train'], audio: './assets/consonant/consonant_tr.aac' }
+            ],
+            // 浊辅音 (17个)
+            voiced: [
+                { symbol: '/b/', desc: '爆破音', words: ['book', 'cab'], audio: './assets/consonant/consonant_b.aac' },
+                { symbol: '/d/', desc: '爆破音', words: ['dog', 'bed'], audio: './assets/consonant/consonant_d.aac' },
+                { symbol: '/g/', desc: '爆破音', words: ['go', 'bag'], audio: './assets/consonant/consonant_g.aac' },
+                { symbol: '/v/', desc: '摩擦音', words: ['very', 'love'], audio: './assets/consonant/consonant_v.aac' },
+                { symbol: '/z/', desc: '摩擦音', words: ['zoo', 'nose'], audio: './assets/consonant/consonant_z.aac' },
+                { symbol: '/ʒ/', desc: '摩擦音', words: ['measure', 'television'], audio: './assets/consonant/consonant_3.aac' },
+                { symbol: '/ð/', desc: '摩擦音', words: ['this', 'mother'], audio: './assets/consonant/consonant_5.aac' },
+                { symbol: '/r/', desc: '摩擦音', words: ['red', 'car'], audio: './assets/consonant/consonant_r.aac' },
+                { symbol: '/dʒ/', desc: '破擦音', words: ['job', 'page'], audio: './assets/consonant/consonant_7.aac' },
+                { symbol: '/dz/', desc: '破擦音', words: ['beds', 'cards'], audio: './assets/consonant/consonant_dz.aac' },
+                { symbol: '/dr/', desc: '破擦音', words: ['drive', 'draw'], audio: './assets/consonant/consonant_dr.aac' },
+                { symbol: '/m/', desc: '鼻音', words: ['man', 'home'], audio: './assets/consonant/consonant_m.aac' },
+                { symbol: '/n/', desc: '鼻音', words: ['no', 'sun'], audio: './assets/consonant/consonant_n.aac' },
+                { symbol: '/ŋ/', desc: '鼻音', words: ['sing', 'long'], audio: './assets/consonant/consonant_4.aac' },
+                { symbol: '/l/', desc: '舌侧音', words: ['leg', 'milk'], audio: './assets/consonant/consonant_l.aac' },
+                { symbol: '/w/', desc: '半元音', words: ['we', 'window'], audio: './assets/consonant/consonant_w.aac' },
+                { symbol: '/j/', desc: '半元音', words: ['yes', 'you'], audio: './assets/consonant/consonant_j.aac' }
+            ]
+        };
+
+        // 创建音标卡片
+        function createPhoneticCard(data, type) {
+            const card = document.createElement('div');
+            card.className = 'phonetic-card';
+            card.dataset.symbol = data.symbol;
+            card.dataset.audio = data.audio;
+            
+            // 左侧：音标+描述
+            const leftDiv = document.createElement('div');
+            leftDiv.className = 'phonetic-left';
+            
+            const symbolDiv = document.createElement('div');
+            symbolDiv.className = 'phonetic-symbol';
+            symbolDiv.textContent = data.symbol;
+            
+            const descDiv = document.createElement('div');
+            descDiv.className = 'phonetic-desc';
+            descDiv.textContent = data.desc;
+            
+            leftDiv.appendChild(symbolDiv);
+            leftDiv.appendChild(descDiv);
+            
+            // 右侧：示例单词
+            const wordsDiv = document.createElement('div');
+            wordsDiv.className = 'words-container';
+            
+            data.words.forEach(word => {
+                const wordSpan = document.createElement('span');
+                wordSpan.className = 'word';
+                wordSpan.textContent = word;
+                wordSpan.dataset.word = word;
+                wordSpan.onclick = (e) => {
+                    e.stopPropagation();
+                    speak(word, 'en-US');
+                };
+                wordsDiv.appendChild(wordSpan);
+            });
+            
+            card.appendChild(leftDiv);
+            card.appendChild(wordsDiv);
+            
+            // 点击音标发音
+            card.addEventListener('click', () => {
+                speakPhonetic(data.symbol, data.audio, card);
+            });
+            
+            return card;
+        }
+
+        // 使用 Web Speech API 发音
+        function speak(text, lang = 'en-US') {
+            if ('speechSynthesis' in window) {
+                // 取消之前的朗读
+                window.speechSynthesis.cancel();
+                
+                const utterance = new SpeechSynthesisUtterance(text);
+                utterance.lang = lang;
+                utterance.rate = 0.8;
+                utterance.pitch = 1;
+                window.speechSynthesis.speak(utterance);
+            } else {
+                alert('您的浏览器不支持语音播放功能');
+            }
+        }
+
+        // 音标发音 - 播放音频文件
+        function speakPhonetic(symbol, audioPath, cardElement) {
+            // 添加播放动画效果
+            cardElement.classList.add('playing');
+            
+            // 创建音频对象并播放
+            const audio = new Audio(audioPath);
+            
+            audio.onended = () => {
+                cardElement.classList.remove('playing');
+            };
+            
+            audio.onerror = () => {
+                cardElement.classList.remove('playing');
+                alert('音频文件不存在: ' + audioPath);
+            };
+            
+            audio.play().catch(err => {
+                cardElement.classList.remove('playing');
+                alert('音频文件不存在: ' + audioPath);
+            });
+        }
+
+        // 切换描述显示/隐藏
+        function toggleDescriptions() {
+            const btn = document.getElementById('descToggle');
+            const descs = document.querySelectorAll('.phonetic-desc');
+            const isShowing = btn.classList.contains('active');
+            
+            if (isShowing) {
+                btn.classList.remove('active');
+                btn.textContent = '显示分类';
+                descs.forEach(desc => desc.classList.remove('show'));
+            } else {
+                btn.classList.add('active');
+                btn.textContent = '隐藏分类';
+                descs.forEach(desc => desc.classList.add('show'));
+            }
+        }
+        
+        // 初始化页面
+        function init() {
+            // 渲染单元音
+            const monophthongsContainer = document.getElementById('monophthongs');
+            phoneticsData.monophthongs.forEach(item => {
+                monophthongsContainer.appendChild(createPhoneticCard(item, 'monophthong'));
+            });
+            
+            // 渲染双元音
+            const diphthongsContainer = document.getElementById('diphthongs');
+            phoneticsData.diphthongs.forEach(item => {
+                diphthongsContainer.appendChild(createPhoneticCard(item, 'diphthong'));
+            });
+            
+            // 渲染清辅音
+            const voicelessContainer = document.getElementById('voiceless');
+            phoneticsData.voiceless.forEach(item => {
+                voicelessContainer.appendChild(createPhoneticCard(item, 'voiceless'));
+            });
+            
+            // 渲染浊辅音
+            const voicedContainer = document.getElementById('voiced');
+            phoneticsData.voiced.forEach(item => {
+                voicedContainer.appendChild(createPhoneticCard(item, 'voiced'));
+            });
+        }
+
+        // 页面加载完成后初始化
+        document.addEventListener('DOMContentLoaded', init);
+    </script>
+</body>
+</html>
