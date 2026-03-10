@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta name="generator" content="VuePress 2.0.0-rc.26" />
+    <style>
+      :root {
+        --vp-c-bg: #fff;
+      }
+
+      [data-theme='dark'] {
+        --vp-c-bg: #1b1b1f;
+      }
+
+      html,
+      body {
+        background-color: var(--vp-c-bg);
+      }
+    </style>
+    <script>
+      const useChoice = localStorage.getItem('vuepress-color-scheme')
+      const systemStatus =
+        'matchMedia' in window
+          ? window.matchMedia('(prefers-color-scheme: dark)').matches
+          : false
+
+      if (useChoice === 'light') {
+        document.documentElement.dataset.theme = 'light'
+      } else if (useChoice === 'dark' || systemStatus) {
+        document.documentElement.dataset.theme = 'dark'
+      }
+    </script>
+    <title></title><meta name="description" content="">
+    <link rel="preload" href="/phonics/assets/style-BgMnNAw5.css" as="style"><link rel="stylesheet" href="/phonics/assets/style-BgMnNAw5.css">
+    <link rel="modulepreload" href="/phonics/assets/app-BU52t-HA.js"><link rel="modulepreload" href="/phonics/assets/404.html-Bx86kKZS.js">
+    <link rel="prefetch" href="/phonics/assets/index.html-zJ3jF0TM.js" as="script"><link rel="prefetch" href="/phonics/assets/字母及字母组合发音规律.html-C9S7zvCr.js" as="script"><link rel="prefetch" href="/phonics/assets/拼读规则.html-CCFfrVaz.js" as="script"><link rel="prefetch" href="/phonics/assets/英语自然拼读法.html-DjgyxZnx.js" as="script">
+  </head>
+  <body>
+    <div id="app"><!--[--><div class="vp-theme-container" vp-container data-v-5c4c7944><main class="page" data-v-5c4c7944><div vp-content data-v-5c4c7944><h1 data-v-5c4c7944>404</h1><blockquote data-v-5c4c7944>There&#39;s nothing here.</blockquote><a class="route-link" href="/phonics/" data-v-5c4c7944>Take me home</a></div></main></div><!--[--><!----><!--]--><!--]--></div>
+    <script type="module" src="/phonics/assets/app-BU52t-HA.js" defer></script>
+  </body>
+</html>
